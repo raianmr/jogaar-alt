@@ -25,7 +25,7 @@ import lombok.Setter;
         name = "tags",
         uniqueConstraints = @UniqueConstraint(
                 columnNames = {
-//                        "campaignId",
+                        "campaign_id",
                         "name",
                 }
         )
@@ -39,6 +39,7 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Builder.Default
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 

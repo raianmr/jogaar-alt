@@ -30,6 +30,7 @@ public class Update {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Builder.Default
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -51,6 +52,7 @@ public class Update {
     @JoinColumn(name = "picture_id", referencedColumnName = "id", nullable = true)
     private Image picture;
 
+    @Builder.Default
     @Column(nullable = false)
     private boolean edited = false;
 }

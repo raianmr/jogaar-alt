@@ -25,8 +25,8 @@ import lombok.Setter;
         name = "milestones",
         uniqueConstraints = @UniqueConstraint(
                 columnNames = {
-//                        "campaign_id",
-//                        "deadline",
+                        "campaign_id",
+                        "deadline",
                 }
         )
 )
@@ -39,6 +39,7 @@ public class Milestone {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Builder.Default
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -56,6 +57,7 @@ public class Milestone {
     @JoinColumn(name = "picture_id", referencedColumnName = "id", nullable = true)
     private Image picture;
 
+    @Builder.Default
     @Column(nullable = false)
     private LocalDateTime deadline = LocalDateTime.now().plusWeeks(1);;
 }

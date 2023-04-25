@@ -28,6 +28,7 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Builder.Default
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -41,6 +42,6 @@ public class Image {
     @Column(nullable = false)
     private String filetype;
 
-    @Column(nullable = true)
+    @Column(nullable = true, unique = true)
     private String location;
 }

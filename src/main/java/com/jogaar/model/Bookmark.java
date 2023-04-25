@@ -25,8 +25,8 @@ import lombok.Setter;
         name = "bookmarks",
         uniqueConstraints = @UniqueConstraint(
                 columnNames = {
-                        "campaign_id",
                         "user_id",
+                        "campaign_id",
                 }
         )
 )
@@ -39,6 +39,7 @@ public class Bookmark {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Builder.Default
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 

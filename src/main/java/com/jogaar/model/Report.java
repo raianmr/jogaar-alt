@@ -27,9 +27,9 @@ import lombok.Setter;
         name = "reports",
         uniqueConstraints = @UniqueConstraint(
                 columnNames = {
-//                        "reporterId",
-                        "contentType",
-                        "contentId"
+                        "reporter_id",
+                        "content_type",
+                        "content_id"
                 }
         )
 )
@@ -46,6 +46,7 @@ public class Report {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Builder.Default
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -59,6 +60,7 @@ public class Report {
     @Column(name = "content_id", nullable = false)
     private Long contentId;
 
+    @Builder.Default
     @Column(name = "content_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private Reportable contentType = Reportable.CAMPAIGN;

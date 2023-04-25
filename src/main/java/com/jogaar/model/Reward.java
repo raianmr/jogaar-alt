@@ -25,8 +25,8 @@ import lombok.Setter;
         name = "rewards",
         uniqueConstraints = @UniqueConstraint(
                 columnNames = {
-//                        "campaignId",
-                        "pledgeAmount",
+                        "campaign_id",
+                        "pledge_amount",
                 }
         )
 )
@@ -39,6 +39,7 @@ public class Reward {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Builder.Default
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 

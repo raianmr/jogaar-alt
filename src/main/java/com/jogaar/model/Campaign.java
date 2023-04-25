@@ -35,6 +35,7 @@ public class Campaign {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Builder.Default
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -57,12 +58,15 @@ public class Campaign {
     @Column(name = "goal_amount", nullable = false)
     private Long goalAmount;
 
+    @Builder.Default
     @Column(name = "pledged_amount", nullable = false)
     private Long pledgedAmount = 0L;
 
+    @Builder.Default
     @Column(nullable = false)
     private LocalDateTime deadline = LocalDateTime.now().plusMonths(1);;
 
+    @Builder.Default
     @Column(name = "current_state", nullable = false)
     @Enumerated(EnumType.STRING)
     private State currentState = State.DRAFT;
