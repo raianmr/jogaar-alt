@@ -1,10 +1,10 @@
-package com.jogaar.repository;
+package com.jogaar.daos;
 
-import com.jogaar.model.Milestone;
+import com.jogaar.entities.Milestone;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MilestoneRepository extends JpaRepository<Milestone, Long> {
+public interface MilestoneDao extends JpaRepository<Milestone, Long> {
 }

@@ -1,10 +1,10 @@
-package com.jogaar.repository;
+package com.jogaar.daos;
 
-import com.jogaar.model.Image;
+import com.jogaar.entities.Image;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ImageRepository extends JpaRepository<Image, Long> {
+public interface ImageDao extends JpaRepository<Image, Long> {
 }

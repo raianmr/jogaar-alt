@@ -1,10 +1,10 @@
-package com.jogaar.repository;
+package com.jogaar.daos;
 
-import com.jogaar.model.Report;
+import com.jogaar.entities.Report;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ReportRepository extends JpaRepository<Report, Long> {
+public interface ReportDao extends JpaRepository<Report, Long> {
 }

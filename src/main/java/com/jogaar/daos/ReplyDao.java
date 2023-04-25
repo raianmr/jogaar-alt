@@ -1,10 +1,10 @@
-package com.jogaar.repository;
+package com.jogaar.daos;
 
-import com.jogaar.model.Reply;
+import com.jogaar.entities.Reply;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ReplyRepository extends JpaRepository<Reply, Long> {
+public interface ReplyDao extends JpaRepository<Reply, Long> {
 }

@@ -1,10 +1,10 @@
-package com.jogaar.repository;
+package com.jogaar.daos;
 
-import com.jogaar.model.Reward;
+import com.jogaar.entities.Reward;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RewardRepository extends JpaRepository<Reward, Long> {
+public interface RewardDao extends JpaRepository<Reward, Long> {
 }

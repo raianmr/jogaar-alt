@@ -1,12 +1,11 @@
-package com.jogaar.controller;
+package com.jogaar.controllers;
 
-import com.jogaar.model.Campaign;
-import com.jogaar.model.User;
-import com.jogaar.repository.CampaignRepository;
-import com.jogaar.repository.UserRepository;
+import com.jogaar.entities.Campaign;
+import com.jogaar.entities.User;
+import com.jogaar.daos.CampaignDao;
+import com.jogaar.daos.UserDao;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,11 +15,11 @@ import java.time.LocalDateTime;
 @RestController
 @RequestMapping("/")
 public class HomeController {
-    UserRepository userRepo;
-    CampaignRepository campaignRepo;
+    UserDao userRepo;
+    CampaignDao campaignRepo;
 
     @Autowired
-    public HomeController(UserRepository userRepo, CampaignRepository campaignRepo) {
+    public HomeController(UserDao userRepo, CampaignDao campaignRepo) {
         this.userRepo = userRepo;
         this.campaignRepo = campaignRepo;
     }
