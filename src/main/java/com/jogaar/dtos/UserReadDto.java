@@ -25,6 +25,6 @@ public class UserReadDto {
     private String contact;
     private String address;
 
-    private Image portrait;
-    private User.Access accessLevel;
+    private ImageReadDto portrait;
+    private String accessLevel;
 }

@@ -1,12 +1,15 @@
 package com.jogaar.controllers;
 
 import com.jogaar.controllers.exceptions.EmailConflictException;
+import com.jogaar.controllers.exceptions.ImageNotFoundException;
 import com.jogaar.controllers.exceptions.NotFoundException;
+import com.jogaar.daos.ImageDao;
 import com.jogaar.daos.UserDao;
 import com.jogaar.dtos.UserCreateDto;
 import com.jogaar.dtos.UserReadDto;
 import com.jogaar.dtos.UserUpdateDto;
 import com.jogaar.dtos.mappers.UserMapper;
+import com.jogaar.entities.Image;
 import com.jogaar.entities.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +36,13 @@ import jakarta.validation.Valid;
 public class UserController {
     private final UserDao userDao;
     private final UserMapper userMapper;
+    private final ImageDao imageDao;
 
     @Autowired
-    public UserController(UserDao userDao, UserMapper userMapper) {
+    public UserController(UserDao userDao, UserMapper userMapper, ImageDao imageDao) {
         this.userDao = userDao;
         this.userMapper = userMapper;
+        this.imageDao = imageDao;
     }
 
     @GetMapping
@@ -74,11 +79,17 @@ public class UserController {
     @PutMapping("/{id}")
     public UserReadDto updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateDto updateDto) {
         // TODO authorization
-        // TODO check for existence of image beforehand
 
         var existingU = userDao.findById(id).orElseThrow(NotFoundException::new);
+        userMapper.updateEntity(existingU, updateDto);
+
+        if (updateDto.getPortrait() != null) {
+            var existingImage = imageDao.findById(updateDto.getPortrait().getId())
+                    .orElseThrow(ImageNotFoundException::new);
+            existingU.setPortrait(existingImage); // that should've been taken care of using mappers
+        }
+
         try {
-            userMapper.updateEntity(existingU, updateDto);
             existingU = userDao.save(existingU);
         } catch (DataIntegrityViolationException exception) {
             throw new EmailConflictException();

@@ -16,7 +16,8 @@ import java.util.List;
 @Mapper(
         componentModel = ComponentModel.SPRING,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        uses = ImageMapper.class
 )
 public interface UserMapper {
     UserReadDto toReadDto(User entity);

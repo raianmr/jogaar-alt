@@ -2,6 +2,7 @@ package com.jogaar.dtos;
 
 import com.jogaar.entities.Image;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,5 +21,6 @@ public class UserUpdateDto {
     private String contact;
     private String address;
 
-    private Image portrait;
+    @Valid
+    private ImageReadDto portrait;
 }
