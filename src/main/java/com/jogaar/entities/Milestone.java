@@ -57,5 +57,5 @@ public class Milestone {
 
     @Builder.Default
     @Column(nullable = false)
-    private LocalDateTime deadline = LocalDateTime.now().plusWeeks(1);;
+    private LocalDateTime deadline = LocalDateTime.now().plusWeeks(1);
 }

@@ -27,7 +27,7 @@ public class CampaignReadDto {
     private Image cover;
 
     private Long goalAmount;
-    private Long pledgedAmount = 0L;
+    private Long pledgedAmount;
     private Campaign.State currentState;
     private LocalDateTime deadline;
 }
