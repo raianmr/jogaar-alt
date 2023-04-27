@@ -1,7 +1,6 @@
 package com.jogaar.dtos;
 
-import com.jogaar.entities.Image;
-
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class RewardUpdateDto {
     private String title;
     private String description;
-    private Image picture;
+    @Valid
+    private ImageReadDto picture;
     private Integer pledgeAmount;
 }

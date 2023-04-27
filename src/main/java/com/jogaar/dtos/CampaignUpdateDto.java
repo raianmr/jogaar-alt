@@ -1,9 +1,6 @@
 package com.jogaar.dtos;
 
-import com.jogaar.entities.Image;
-
-import java.time.LocalDateTime;
-
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,5 +16,8 @@ public class CampaignUpdateDto {
     private String challenges;
     private String faqs;
 
-    private Image cover;
+    private String currentState;
+
+    @Valid
+    private ImageReadDto cover;
 }

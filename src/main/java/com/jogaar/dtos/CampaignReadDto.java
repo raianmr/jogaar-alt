@@ -1,11 +1,9 @@
 package com.jogaar.dtos;
 
-import com.jogaar.entities.Campaign;
-import com.jogaar.entities.Image;
-import com.jogaar.entities.User;
-
 import java.time.LocalDateTime;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CampaignReadDto {
+    @NotNull
     private Long id;
     private LocalDateTime createdAt;
 
@@ -24,10 +23,11 @@ public class CampaignReadDto {
     private String challenges;
     private String faqs;
 
-    private Image cover;
+    @Valid
+    private ImageReadDto cover;
 
     private Long goalAmount;
     private Long pledgedAmount;
-    private Campaign.State currentState;
+    private String currentState;
     private LocalDateTime deadline;
 }

@@ -1,9 +1,8 @@
 package com.jogaar.dtos;
 
-import com.jogaar.entities.Image;
-
 import java.time.LocalDateTime;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class MilestoneUpdateDto {
     private String title;
     private String description;
-    private Image picture;
+    @Valid
+    private ImageReadDto picture;
     private LocalDateTime deadline;
 }

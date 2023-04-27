@@ -1,11 +1,9 @@
 package com.jogaar.dtos;
 
-import com.jogaar.entities.Image;
-import com.jogaar.entities.Report;
-import com.jogaar.entities.User;
-
 import java.time.LocalDateTime;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,13 +14,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReportReadDto {
+    @NotNull
     private Long id;
     private LocalDateTime createdAt;
 
     private String description;
     private Long contentId;
-    private Report.Reportable contentType;
+    private String contentType;
 
-    private User reporter;
+    @Valid
+    private UserReadDto reporter;
 
 }

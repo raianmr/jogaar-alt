@@ -1,7 +1,5 @@
 package com.jogaar.dtos;
 
-import com.jogaar.entities.Image;
-
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

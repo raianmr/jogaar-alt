@@ -1,11 +1,9 @@
 package com.jogaar.dtos;
 
-import com.jogaar.entities.Image;
-import com.jogaar.entities.Update;
-import com.jogaar.entities.User;
-
 import java.time.LocalDateTime;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,13 +14,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReplyReadDto {
+    @NotNull
     private Long id;
     private LocalDateTime createdAt;
 
     private String content;
 
-    private User user;
-    private Update update;
+    @Valid
+    private UserReadDto user;
+    @Valid
+    private UpdateReadDto update;
 
     private boolean edited;
 }

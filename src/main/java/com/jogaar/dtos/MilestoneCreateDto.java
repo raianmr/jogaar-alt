@@ -1,7 +1,5 @@
 package com.jogaar.dtos;
 
-import com.jogaar.entities.Image;
-
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;

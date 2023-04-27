@@ -1,11 +1,8 @@
 package com.jogaar.dtos;
 
-import com.jogaar.entities.Campaign;
-import com.jogaar.entities.Image;
-import com.jogaar.entities.User;
-
 import java.time.LocalDateTime;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,15 +13,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateReadDto {
+    @NotNull
     private Long id;
     private LocalDateTime createdAt;
 
     private String title;
     private String content;
 
-    private User user;
-    private Campaign campaign;
-    private Image picture;
+    private UserReadDto user;
+    private CampaignReadDto campaign;
+    private ImageReadDto picture;
 
     private boolean edited;
 }

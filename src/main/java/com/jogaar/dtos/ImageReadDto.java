@@ -1,8 +1,5 @@
 package com.jogaar.dtos;
 
-import com.jogaar.entities.Image;
-import com.jogaar.entities.User;
-
 import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotNull;
