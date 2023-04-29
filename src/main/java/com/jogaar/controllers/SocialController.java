@@ -19,11 +19,11 @@ public class SocialController {
         this.campaignRepo = campaignRepo;
     }
 
-    @GetMapping("/")
-    public ResponseEntity<Object> home() {
-        return ResponseEntity.ok("Some useful stats e.g. " +
-                                 "number of successful campaigners, " +
-                                 "number of greenlit campaigns," +
-                                 "number of happy pledgers, etc.");
-    }
+//    @GetMapping("/")
+//    public ResponseEntity<Object> home() {
+//        return ResponseEntity.ok("Some useful stats e.g. " +
+//                                 "number of successful campaigners, " +
+//                                 "number of greenlit campaigns," +
+//                                 "number of happy pledgers, etc.");
+//    }
 }

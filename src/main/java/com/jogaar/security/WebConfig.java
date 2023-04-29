@@ -1,4 +1,4 @@
-package com.jogaar.configs;
+package com.jogaar.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
