@@ -1,6 +1,7 @@
 package com.jogaar.controllers;
 
 import com.jogaar.controllers.exceptions.DuplicateForUserException;
+import com.jogaar.controllers.exceptions.NotAllowedException;
 import com.jogaar.controllers.exceptions.NotFoundException;
 import com.jogaar.controllers.exceptions.ImageNotFoundException;
 import com.jogaar.daos.CampaignDao;
@@ -12,6 +13,8 @@ import com.jogaar.dtos.CampaignUpdateDto;
 import com.jogaar.dtos.mappers.CampaignMapper;
 import com.jogaar.dtos.mappers.UserMapper;
 import com.jogaar.entities.Campaign;
+import com.jogaar.entities.User;
+import com.jogaar.security.AuthService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -41,6 +44,8 @@ public class FundraisingController {
     private final ImageDao imageDao;
     private final CampaignDao campaignDao;
     private final CampaignMapper campaignMapper;
+    private final AuthService authService;
+
 
     @PostMapping("/campaigns/{id}/start")
     public CampaignReadDto startCampaign(@PathVariable Long id) {
@@ -117,4 +122,6 @@ public class FundraisingController {
 
         campaignDao.deleteById(id);
     }
+
+
 }

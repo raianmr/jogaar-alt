@@ -4,6 +4,7 @@ import com.jogaar.entities.Campaign;
 import com.jogaar.entities.User;
 import com.jogaar.daos.CampaignDao;
 import com.jogaar.daos.UserDao;
+import com.jogaar.security.AuthService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class HomeController {
     private final UserDao userRepo;
     private final CampaignDao campaignRepo;
+    private final AuthService authService;
 
     @GetMapping("/")
     public ResponseEntity<Object> home() {
