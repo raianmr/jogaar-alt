@@ -17,17 +17,13 @@ import java.time.LocalDateTime;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 public class HomeController {
-    UserDao userRepo;
-    CampaignDao campaignRepo;
-
-    @Autowired
-    public HomeController(UserDao userRepo, CampaignDao campaignRepo) {
-        this.userRepo = userRepo;
-        this.campaignRepo = campaignRepo;
-    }
+    private final UserDao userRepo;
+    private final CampaignDao campaignRepo;
 
     @GetMapping("/")
     public ResponseEntity<Object> home() {

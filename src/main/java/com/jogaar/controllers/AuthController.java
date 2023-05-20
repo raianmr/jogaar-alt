@@ -6,11 +6,15 @@ import com.jogaar.controllers.exceptions.NotFoundException;
 import com.jogaar.daos.ImageDao;
 import com.jogaar.daos.UserDao;
 import com.jogaar.dtos.UserCreateDto;
+import com.jogaar.dtos.UserLoginDto;
+import com.jogaar.dtos.UserLoginResponseDto;
 import com.jogaar.dtos.UserReadDto;
 import com.jogaar.dtos.UserUpdateDto;
 import com.jogaar.dtos.mappers.UserMapper;
 import com.jogaar.entities.User;
+import com.jogaar.security.AuthService;
 
+import org.hibernate.boot.model.TypeDefinitionRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
@@ -30,19 +34,15 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 public class AuthController {
     private final UserDao userDao;
     private final UserMapper userMapper;
     private final ImageDao imageDao;
-
-    @Autowired
-    public AuthController(UserDao userDao, UserMapper userMapper, ImageDao imageDao) {
-        this.userDao = userDao;
-        this.userMapper = userMapper;
-        this.imageDao = imageDao;
-    }
+    private final AuthService authService;
 
     @GetMapping("/users")
     public List<UserReadDto> readUsers(
@@ -66,15 +66,24 @@ public class AuthController {
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     public UserReadDto createUser(@Valid @RequestBody UserCreateDto createDto) {
-        // TODO hash password and all
-        User newU;
+        UserReadDto newU;
         try {
-            newU = userDao.save(userMapper.fromCreateDto(createDto));
+            newU = authService.register(createDto);
         } catch (DataIntegrityViolationException exception) {
             throw new EmailConflictException();
         }
 
-        return userMapper.toReadDto(newU);
+        return newU;
+    }
+
+    @PostMapping("/login")
+    public UserLoginResponseDto loginUser(@Valid @RequestBody UserLoginDto loginDto) {
+        return authService.login(loginDto);
+    }
+
+    @PostMapping("/test")
+    public String test() {
+        return "test";
     }
     
     @PutMapping("/users/{id}")
@@ -84,10 +93,14 @@ public class AuthController {
         var existingU = userDao.findById(id).orElseThrow(NotFoundException::new);
         userMapper.updateEntity(existingU, updateDto);
 
+        if (updateDto.getPassword() != null) {
+            authService.updatePassword(existingU, updateDto.getPassword());
+        }
+
         if (updateDto.getPortrait() != null) {
             var existingImage = imageDao.findById(updateDto.getPortrait().getId())
                     .orElseThrow(ImageNotFoundException::new);
-            existingU.setPortrait(existingImage); // that should've been taken care of using mappers
+            existingU.setPortrait(existingImage);
         }
 
         try {
@@ -105,10 +118,5 @@ public class AuthController {
         // TODO authorization
 
         userDao.deleteById(id);
-    }
-
-    @PostMapping("/login")
-    public UserReadDto loginUser() {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
 }

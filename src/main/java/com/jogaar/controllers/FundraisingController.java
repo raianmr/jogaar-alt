@@ -31,23 +31,16 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 public class FundraisingController {
     private final UserDao userDao;
     private final UserMapper userMapper;
     private final ImageDao imageDao;
     private final CampaignDao campaignDao;
     private final CampaignMapper campaignMapper;
-
-    @Autowired
-    public FundraisingController(UserDao userDao, UserMapper userMapper, ImageDao imageDao, CampaignDao campaignDao, CampaignMapper campaignMapper) {
-        this.userDao = userDao;
-        this.userMapper = userMapper;
-        this.imageDao = imageDao;
-        this.campaignDao = campaignDao;
-        this.campaignMapper = campaignMapper;
-    }
 
     @PostMapping("/campaigns/{id}/start")
     public CampaignReadDto startCampaign(@PathVariable Long id) {

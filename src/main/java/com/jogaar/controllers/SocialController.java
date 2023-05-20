@@ -8,16 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-public class SocialController {
-    UserDao userRepo;
-    CampaignDao campaignRepo;
+import lombok.RequiredArgsConstructor;
 
-    @Autowired
-    public SocialController(UserDao userRepo, CampaignDao campaignRepo) {
-        this.userRepo = userRepo;
-        this.campaignRepo = campaignRepo;
-    }
+@RestController
+@RequiredArgsConstructor
+public class SocialController {
+    private final UserDao userRepo;
+    private final CampaignDao campaignRepo;
+
 
 //    @GetMapping("/")
 //    public ResponseEntity<Object> home() {
