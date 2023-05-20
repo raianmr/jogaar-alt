@@ -26,6 +26,7 @@ public class HomeController {
     private final UserDao userRepo;
     private final CampaignDao campaignRepo;
     private final AuthService authService;
+    private final AuthHelper authHelper;
 
     @GetMapping("/")
     public ResponseEntity<Object> home() {

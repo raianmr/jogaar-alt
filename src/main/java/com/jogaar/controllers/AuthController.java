@@ -92,6 +92,7 @@ public class AuthController {
     @PutMapping("/users/{id}")
     public UserReadDto updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateDto updateDto) {
         var existingU = userDao.findById(id).orElseThrow(NotFoundException::new);
+
         authHelper.currentAuthorOrElseThrow(existingU);
 
         userMapper.updateEntity(existingU, updateDto);

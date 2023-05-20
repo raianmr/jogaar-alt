@@ -10,5 +10,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FundingController {
     private final AuthService authService;
+    private final AuthHelper authHelper;
 
 }

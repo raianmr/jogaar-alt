@@ -45,12 +45,15 @@ public class FundraisingController {
     private final CampaignDao campaignDao;
     private final CampaignMapper campaignMapper;
     private final AuthService authService;
+    private final AuthHelper authHelper;
 
 
     @PostMapping("/campaigns/{id}/start")
     public CampaignReadDto startCampaign(@PathVariable Long id) {
-        // TODO authorization: only owner
         var existingC = campaignDao.findById(id).orElseThrow(NotFoundException::new);
+
+        authHelper.currentAuthorOrElseThrow(existingC);
+
         existingC.setCurrentState(Campaign.State.STARTED);
         existingC = campaignDao.save(existingC);
 
@@ -73,6 +76,54 @@ public class FundraisingController {
                 .toList();
     }
 
+    @GetMapping("/users/{id}/campaigns")
+    public List<CampaignReadDto> readCampaignsByUser(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Long userId
+    ) {
+        return campaignDao.findAllByCampaigner(
+                        userId != null
+                                ? userDao.findById(userId).orElseThrow(NotFoundException::new)
+                                : authHelper.currentUserOrElseThrow(),
+                        PageRequest.of(page, size)
+                )
+                .map(campaignMapper::toReadDto)
+                .toList();
+    }
+
+    @GetMapping("/campaigns/bookmarked")
+    public List<CampaignReadDto> readBookmarkedCampaigns(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Long userId
+    ) {
+        return campaignDao.findAllBookmarkedByUser(
+                    userId != null
+                            ? userId
+                            : authHelper.currentUserOrElseThrow().getId(),
+                    PageRequest.of(page, size)
+                )
+                .map(campaignMapper::toReadDto)
+                .toList();
+    }
+
+    @GetMapping("/campaigns/pledged")
+    public List<CampaignReadDto> readPledgedCampaigns(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Long userId
+    ) {
+        return campaignDao.findAllPledgedByUser(
+                        userId != null
+                                ? userId
+                                : authHelper.currentUserOrElseThrow().getId(),
+                        PageRequest.of(page, size)
+                )
+                .map(campaignMapper::toReadDto)
+                .toList();
+    }
+
     @GetMapping("/campaigns/{id}")
     public CampaignReadDto readCampaign(@PathVariable Long id) {
         return campaignDao.findById(id)
@@ -83,9 +134,10 @@ public class FundraisingController {
     @PostMapping("/campaigns")
     @ResponseStatus(HttpStatus.CREATED)
     public CampaignReadDto createCampaign(@Valid @RequestBody CampaignCreateDto createDto) {
-    // TODO authorization
         try {
-            var newC = campaignDao.save(campaignMapper.fromCreateDto(createDto));
+            var toBeSaved = campaignMapper.fromCreateDto(createDto);
+            toBeSaved.setCampaigner(authHelper.currentUserOrElseThrow());
+            var newC = campaignDao.save(toBeSaved);
 
             return campaignMapper.toReadDto(newC);
         } catch (DataIntegrityViolationException exception) {
@@ -95,15 +147,15 @@ public class FundraisingController {
 
     @PutMapping("/campaigns/{id}")
     public CampaignReadDto updateCampaign(@PathVariable Long id, @Valid @RequestBody CampaignUpdateDto updateDto) {
-        // TODO authorization, only owner can update
-        //
         var existingC = campaignDao.findById(id).orElseThrow(NotFoundException::new);
-        campaignMapper.updateEntity(existingC, updateDto);
 
+        authHelper.currentAuthorOrElseThrow(existingC);
+
+        campaignMapper.updateEntity(existingC, updateDto);
         if (updateDto.getCover() != null) {
             var existingImage = imageDao.findById(updateDto.getCover().getId())
                     .orElseThrow(ImageNotFoundException::new);
-            existingC.setCover(existingImage); // that should've been taken care of using mappers
+            existingC.setCover(existingImage);
         }
 
         try {
@@ -118,10 +170,9 @@ public class FundraisingController {
     @DeleteMapping("/campaigns/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCampaign(@PathVariable Long id) {
-        // TODO authorization
+        var existingC = campaignDao.findById(id).orElseThrow(NotFoundException::new);
+        authHelper.currentAuthorOrElseThrow(existingC);
 
         campaignDao.deleteById(id);
     }
-
-
 }

@@ -22,6 +22,7 @@ public class SocialController {
     private final UserDao userRepo;
     private final CampaignDao campaignRepo;
     private final AuthService authService;
+    private final AuthHelper authHelper;
 
 
 //    @GetMapping("/")
