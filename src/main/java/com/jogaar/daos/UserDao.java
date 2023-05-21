@@ -3,6 +3,7 @@ package com.jogaar.daos;
 import com.jogaar.entities.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -10,4 +11,13 @@ import java.util.Optional;
 @Repository
 public interface UserDao extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
+
+    @Query("SELECT COUNT(DISTINCT c.campaigner) FROM Campaign c where c.currentState = 'GREENLIT'")
+    Long countSuccessfulCampaigners();
+
+    @Query("SELECT COUNT(DISTINCT p.pledger) FROM Pledge p INNER JOIN p.campaign c where c.currentState = 'GREENLIT'")
+    Long countSuccessfulPledgers();
+
+    @Query("SELECT SUM(p.amount) FROM Pledge p INNER JOIN p.campaign c where c.currentState = 'GREENLIT'")
+    Long totalRaised();
 }

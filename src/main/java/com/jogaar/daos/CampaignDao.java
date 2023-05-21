@@ -16,6 +16,8 @@ import java.util.List;
 public interface CampaignDao extends JpaRepository<Campaign, Long> {
     Page<Campaign> findAllByCurrentState(Campaign.State state, Pageable pageable);
 
+    Page<Campaign> findAllByCurrentStateOrderByDeadlineDesc(Campaign.State state, Pageable pageable);
+
     Page<Campaign> findAllByCampaigner(User campaigner, Pageable pageable);
 
     @Query("SELECT c FROM Bookmark b INNER JOIN b.campaign c WHERE b.user.id = :userId ")
@@ -23,4 +25,14 @@ public interface CampaignDao extends JpaRepository<Campaign, Long> {
 
     @Query("SELECT c FROM Pledge p INNER JOIN p.campaign c WHERE p.pledger.id = :userId ")
     Page<Campaign> findAllPledgedByUser(@Param("userId") Long userId, Pageable pageable);
+
+    //    TODO: Fix this query
+    @Query("""
+        SELECT c FROM Tag t FULL OUTER JOIN t.campaign c
+        WHERE c.currentState = 'STARTED' AND c.campaigner.id <> :forUserId
+        GROUP BY c.id ORDER BY (
+            SELECT DESC (COUNT(t2.id)) FROM Tag t2 WHERE t2.campaign.id = c.id
+        )
+    """)
+    Page<Campaign> recommendedCampaigns(@Param("forUserId") Long forUserId, Pageable pageable);
 }
