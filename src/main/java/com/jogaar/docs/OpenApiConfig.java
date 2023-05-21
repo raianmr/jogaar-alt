@@ -1,4 +1,4 @@
-package com.jogaar.config;
+package com.jogaar.docs;
 
 
 import org.springframework.context.annotation.Configuration;

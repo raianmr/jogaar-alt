@@ -1,6 +1,8 @@
 package com.jogaar.daos;
 
+import com.jogaar.entities.Campaign;
 import com.jogaar.entities.Image;
+import com.jogaar.entities.Reward;
 import com.jogaar.entities.User;
 
 import org.springframework.data.domain.Page;

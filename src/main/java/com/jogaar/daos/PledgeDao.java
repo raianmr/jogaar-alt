@@ -19,6 +19,9 @@ public interface PledgeDao extends JpaRepository<Pledge, Long> {
     @Query("SELECT SUM(p.amount) FROM Pledge p WHERE p.campaign = :campaign")
     Long totalPledgedByCampaign(@Param("campaign") Campaign campaign);
 
+    @Query("SELECT SUM(p.amount) FROM Pledge p")
+    Long totalPledgedByAllCampaigns();
+
     Page<Pledge> findAllByCampaign(Campaign campaign, Pageable pageable);
     Page<Pledge> findAllByPledger(User pledger, Pageable pageable);
 
