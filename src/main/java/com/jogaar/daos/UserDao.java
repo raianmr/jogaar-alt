@@ -1,11 +1,14 @@
 package com.jogaar.daos;
 
+import com.jogaar.entities.Campaign;
 import com.jogaar.entities.User;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -25,4 +28,9 @@ public interface UserDao extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.accessLevel = 'MOD' OR u.accessLevel = 'ADMIN'")
     Page<User> findAllSuperUsers(Pageable pageable);
+
+    @Query("SELECT u FROM User u WHERE u.accessLevel = 'BANNED'")
+    Page<User> findAllBannedUsers(Pageable pageable);
+
+    Page<User> findAllByAccessLevel(User.Access access, Pageable pageable);
 }

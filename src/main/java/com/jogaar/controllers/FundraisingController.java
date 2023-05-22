@@ -47,6 +47,30 @@ public class FundraisingController {
     private final AuthService authService;
     private final AuthHelper authHelper;
 
+    @PostMapping("/campaigns/{id}/lock")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public CampaignReadDto lockCampaign(@PathVariable Long id) {
+        var existingC = campaignDao.findById(id).orElseThrow(NotFoundException::new);
+
+        authHelper.currentSuperOrElseThrow();
+
+        existingC.setCurrentState(Campaign.State.LOCKED);
+        existingC = campaignDao.save(existingC);
+
+        return campaignMapper.toReadDto(existingC);
+    }
+
+    @PostMapping("/campaigns/{id}/greenlight")
+    public CampaignReadDto greenlightCampaign(@PathVariable Long id) {
+        var existingC = campaignDao.findById(id).orElseThrow(NotFoundException::new);
+
+        authHelper.currentSuperOrElseThrow();
+
+        existingC.setCurrentState(Campaign.State.GREENLIT);
+        existingC = campaignDao.save(existingC);
+
+        return campaignMapper.toReadDto(existingC);
+    }
 
     @PostMapping("/campaigns/{id}/start")
     public CampaignReadDto startCampaign(@PathVariable Long id) {
@@ -76,16 +100,16 @@ public class FundraisingController {
                 .toList();
     }
 
-    @GetMapping("/users/{id}/campaigns")
+    @GetMapping("/users/{userId}/campaigns")
     public List<CampaignReadDto> readCampaignsByUser(
+            @PathVariable Long userId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) Long userId
+            @RequestParam(defaultValue = "10") int size
     ) {
+        var existingU = userDao.findById(userId).orElseThrow(NotFoundException::new);
+
         return campaignDao.findAllByCampaigner(
-                        userId != null
-                                ? userDao.findById(userId).orElseThrow(NotFoundException::new)
-                                : authHelper.currentUserOrElseThrow(),
+                        existingU,
                         PageRequest.of(page, size)
                 )
                 .map(campaignMapper::toReadDto)

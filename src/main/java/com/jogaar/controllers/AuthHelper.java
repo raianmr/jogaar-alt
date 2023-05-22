@@ -1,5 +1,6 @@
 package com.jogaar.controllers;
 
+import com.jogaar.controllers.exceptions.BannedException;
 import com.jogaar.controllers.exceptions.NotAllowedException;
 import com.jogaar.controllers.exceptions.NotFoundException;
 import com.jogaar.entities.Campaign;
@@ -18,9 +19,35 @@ public class AuthHelper {
     private final AuthService authService;
 
     public User currentUserOrElseThrow() {
-        return authService
+        var currentU = authService
                 .getCurrentUser()
                 .orElseThrow(NotFoundException::new);
+
+        if (!isValidUser(currentU)) {
+            throw new BannedException();
+        }
+
+        return currentU;
+    }
+
+    public User currentSuperOrElseThrow() {
+        var currentU = currentUserOrElseThrow();
+
+        if (!isSuperUser(currentU)) {
+            throw new NotAllowedException();
+        }
+
+        return currentU;
+    }
+
+    public User currentAdminOrElseThrow() {
+        var currentU = currentUserOrElseThrow();
+
+        if (currentU.getAccessLevel() != User.Access.ADMIN) {
+            throw new NotAllowedException();
+        }
+
+        return currentU;
     }
 
     public User currentAuthorOrElseThrow(User existingUser) {
@@ -32,6 +59,8 @@ public class AuthHelper {
 
         return currentU;
     }
+
+
 
     public User currentAuthorOrElseThrow(Image existingImage) {
         return currentAuthorOrElseThrow(existingImage.getUploader());
@@ -48,4 +77,11 @@ public class AuthHelper {
     public boolean isSuperUser(User user) {
         return user.getAccessLevel() == User.Access.ADMIN || user.getAccessLevel() == User.Access.MOD;
     }
+
+    public boolean isValidUser(User user) {
+        return user.getAccessLevel() != User.Access.BANNED;
+    }
+
+
+
 }

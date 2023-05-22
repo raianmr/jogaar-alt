@@ -4,16 +4,23 @@ import com.jogaar.controllers.exceptions.EmailConflictException;
 import com.jogaar.controllers.exceptions.ImageNotFoundException;
 import com.jogaar.controllers.exceptions.NotAllowedException;
 import com.jogaar.controllers.exceptions.NotFoundException;
+import com.jogaar.daos.CampaignDao;
 import com.jogaar.daos.ImageDao;
+import com.jogaar.daos.ReportDao;
 import com.jogaar.daos.UserDao;
+import com.jogaar.dtos.CampaignReadDto;
+import com.jogaar.dtos.ReportReadDto;
 import com.jogaar.dtos.UserCreateDto;
 import com.jogaar.dtos.UserLoginDto;
 import com.jogaar.dtos.UserLoginResponseDto;
 import com.jogaar.dtos.UserReadDto;
 import com.jogaar.dtos.UserUpdateDto;
+import com.jogaar.dtos.mappers.ReportMapper;
 import com.jogaar.dtos.mappers.UserMapper;
+import com.jogaar.entities.Campaign;
 import com.jogaar.entities.Image;
 import com.jogaar.entities.Reply;
+import com.jogaar.entities.Report;
 import com.jogaar.entities.User;
 import com.jogaar.security.AuthService;
 
@@ -40,16 +47,34 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
     private final UserDao userDao;
     private final UserMapper userMapper;
+    private final ReportDao reportDao;
     private final ImageDao imageDao;
     private final AuthService authService;
     private final AuthHelper authHelper;
+    private final ReportMapper reportMapper;
 
     @GetMapping("/users")
     public List<UserReadDto> readUsers(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        return userDao
-                .findAll(PageRequest.of(page, size))
+            @RequestParam(defaultValue = "10") int size,
+            @Valid @RequestParam(required = false) User.Access access) {
+        var result = access != null
+                ? userDao.findAllByAccessLevel(access, PageRequest.of(page, size))
+                : userDao.findAll(PageRequest.of(page, size));
+
+        return result
+                .getContent()
+                .stream()
+                .map(userMapper::toReadDto)
+                .toList();
+    }
+
+    @GetMapping("/users/supers")
+    public List<UserReadDto> readSuperUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return userDao.findAllSuperUsers(PageRequest.of(page, size))
                 .getContent()
                 .stream()
                 .map(userMapper::toReadDto)
@@ -88,7 +113,7 @@ public class AuthController {
     public UserLoginResponseDto loginUser(@Valid @RequestBody UserLoginDto loginDto) {
         return authService.login(loginDto);
     }
-    
+
     @PutMapping("/users/{id}")
     public UserReadDto updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateDto updateDto) {
         var existingU = userDao.findById(id).orElseThrow(NotFoundException::new);
@@ -121,5 +146,60 @@ public class AuthController {
         authHelper.currentAuthorOrElseThrow(existingU);
 
         userDao.deleteById(id);
+    }
+
+    @PostMapping("/users/{id}/ban")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public UserReadDto banUser(@PathVariable Long id) {
+        authHelper.currentSuperOrElseThrow();
+
+        var existingU = userDao.findById(id).orElseThrow(NotFoundException::new);
+
+        existingU.setAccessLevel(User.Access.BANNED);
+        existingU = userDao.save(existingU);
+
+        return userMapper.toReadDto(existingU);
+    }
+
+    @PostMapping("/users/{id}/promote")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public UserReadDto promoteUser(@PathVariable Long id) {
+        authHelper.currentSuperOrElseThrow();
+
+        var existingU = userDao.findById(id).orElseThrow(NotFoundException::new);
+
+        existingU.setAccessLevel(User.Access.MOD);
+        existingU = userDao.save(existingU);
+
+        return userMapper.toReadDto(existingU);
+    }
+
+    @PostMapping("/users/{id}/demote")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public UserReadDto demoteUser(@PathVariable Long id) {
+        authHelper.currentSuperOrElseThrow();
+
+        var existingU = userDao.findById(id).orElseThrow(NotFoundException::new);
+
+        existingU.setAccessLevel(User.Access.NORMAL);
+        existingU = userDao.save(existingU);
+
+        return userMapper.toReadDto(existingU);
+    }
+
+    @GetMapping("/reports")
+    public List<ReportReadDto> readReports(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @Valid @RequestParam(required = false) Report.Reportable type) {
+        var result = type != null
+                ? reportDao.findAllByContentType(type, PageRequest.of(page, size))
+                : reportDao.findAll(PageRequest.of(page, size));
+
+        return result
+                .getContent()
+                .stream()
+                .map(reportMapper::toReadDto)
+                .toList();
     }
 }

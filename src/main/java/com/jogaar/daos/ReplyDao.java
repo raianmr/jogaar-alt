@@ -16,5 +16,5 @@ public interface ReplyDao extends JpaRepository<Reply, Long> {
     Long scoreForReply(@Param("replyId") Long replyId);
 
     @Query("SELECT r FROM Reply r INNER JOIN r.update u WHERE u.user.id = :userId ORDER BY r.createdAt DESC")
-    Page<Vote> replyAlerts(@Param("userId") Long userId, Pageable pageable);
+    Page<Reply> replyAlerts(@Param("userId") Long userId, Pageable pageable);
 }

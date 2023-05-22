@@ -1,9 +1,8 @@
 package com.jogaar.dtos.mappers;
 
-import com.jogaar.dtos.UserCreateDto;
-import com.jogaar.dtos.UserReadDto;
-import com.jogaar.dtos.UserUpdateDto;
-import com.jogaar.entities.User;
+import com.jogaar.dtos.ReportCreateDto;
+import com.jogaar.dtos.ReportReadDto;
+import com.jogaar.entities.Report;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants.ComponentModel;
@@ -17,11 +16,10 @@ import java.util.List;
         componentModel = ComponentModel.SPRING,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        uses = ImageMapper.class
+        uses = UserMapper.class
 )
-public interface UserMapper {
-    UserReadDto toReadDto(User entity);
-    List<UserReadDto> toReadDtos(List<User> entities);
-    User fromCreateDto(UserCreateDto createDto);
-    void updateEntity(@MappingTarget User entity, UserUpdateDto updateDto);
+public interface ReportMapper {
+    ReportReadDto toReadDto(Report entity);
+    List<ReportReadDto> toReadDtos(List<Report> entities);
+    Report fromCreateDto(ReportCreateDto createDto);
 }

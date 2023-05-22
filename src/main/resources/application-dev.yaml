@@ -12,14 +12,21 @@ spring:
       hibernate:
         format_sql: true
     database: postgresql
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
 
 server:
   error:
     include-stacktrace: never
+  tomcat:
+    max-swallow-size: 20MB
 
 jogaar:
   secret-key: c15f78a40cc367bd585b36edb2ac73e653fc45170807f863d5954371615a6f1e
-  token-life-span-in-mins: 60
+  token-life-span-in-mins: 360
+  static-dir: src/main/resources/static
 
 springdoc:
   show-login-endpoint: true

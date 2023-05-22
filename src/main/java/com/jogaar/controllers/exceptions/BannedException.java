@@ -5,6 +5,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 public class BannedException extends ResponseStatusException {
     public BannedException() {
-        super(HttpStatus.FORBIDDEN, "user was banned by a mod");
+        super(HttpStatus.FORBIDDEN, "current user was banned by a mod");
     }
 }
