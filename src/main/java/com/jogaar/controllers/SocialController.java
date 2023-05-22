@@ -24,14 +24,4 @@ public class SocialController {
     private final AuthService authService;
     private final AuthHelper authHelper;
 
-
-//    @GetMapping("/")
-//    public ResponseEntity<Object> home() {
-//        return ResponseEntity.ok("Some useful stats e.g. " +
-//                                 "number of successful campaigners, " +
-//                                 "number of greenlit campaigns," +
-//                                 "number of happy pledgers, etc.");
-//    }
-
-
 }

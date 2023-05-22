@@ -25,6 +25,8 @@ public class CampaignReadDto {
 
     @Valid
     private ImageReadDto cover;
+    @Valid
+    private UserReadDto campaigner;
 
     private Long goalAmount;
     private Long pledgedAmount;

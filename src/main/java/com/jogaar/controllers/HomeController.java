@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -37,20 +39,11 @@ public class HomeController {
 
     @GetMapping("/")
     public ResponseEntity<Object> home() {
-        return ResponseEntity.ok("Some useful stats e.g. " +
-                                 "number of successful campaigners, " +
-                                 "number of greenlit campaigns," +
-                                 "number of happy pledgers, etc.");
-    }
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("successfulCampaigners", userRepo.countSuccessfulCampaigners());
+        stats.put("successfulPledgers", userRepo.countSuccessfulPledgers());
+        stats.put("totalRaised", userRepo.totalRaised());
 
-    @GetMapping("/test")
-    public List<CampaignReadDto> test() {
-        return campaignRepo
-                .fuzzySearchCampaigns(
-                        "string",
-                        PageRequest.of(0, 10))
-                .getContent()
-                .stream().map(campaignMapper::toReadDto)
-                .toList();
+        return ResponseEntity.ok(stats);
     }
 }

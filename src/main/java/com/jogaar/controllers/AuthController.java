@@ -1,5 +1,6 @@
 package com.jogaar.controllers;
 
+import com.jogaar.controllers.exceptions.DuplicateForUserException;
 import com.jogaar.controllers.exceptions.EmailConflictException;
 import com.jogaar.controllers.exceptions.ImageNotFoundException;
 import com.jogaar.controllers.exceptions.NotAllowedException;
@@ -9,6 +10,7 @@ import com.jogaar.daos.ImageDao;
 import com.jogaar.daos.ReportDao;
 import com.jogaar.daos.UserDao;
 import com.jogaar.dtos.CampaignReadDto;
+import com.jogaar.dtos.ReportCreateDto;
 import com.jogaar.dtos.ReportReadDto;
 import com.jogaar.dtos.UserCreateDto;
 import com.jogaar.dtos.UserLoginDto;
@@ -201,5 +203,20 @@ public class AuthController {
                 .stream()
                 .map(reportMapper::toReadDto)
                 .toList();
+    }
+
+    @PostMapping("/reports")
+    public ReportReadDto createReport(@Valid @RequestBody ReportCreateDto createDto) {
+        User currentU = authHelper.currentUserOrElseThrow();
+
+        try {
+            var toBeSaved = reportMapper.fromCreateDto(createDto);
+            toBeSaved.setReporter(currentU);
+            var newC = reportDao.save(toBeSaved);
+
+            return reportMapper.toReadDto(newC);
+        } catch (DataIntegrityViolationException exception) {
+            throw new DuplicateForUserException();
+        }
     }
 }

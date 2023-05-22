@@ -1,6 +1,5 @@
 package com.jogaar.daos;
 
-import com.jogaar.entities.Campaign;
 import com.jogaar.entities.User;
 
 import org.springframework.data.domain.Page;
@@ -23,7 +22,7 @@ public interface UserDao extends JpaRepository<User, Long> {
     @Query("SELECT COUNT(DISTINCT p.pledger) FROM Pledge p INNER JOIN p.campaign c where c.currentState = 'GREENLIT'")
     Long countSuccessfulPledgers();
 
-    @Query("SELECT SUM(p.amount) FROM Pledge p INNER JOIN p.campaign c where c.currentState = 'GREENLIT'")
+    @Query("SELECT COALESCE(SUM(p.amount), 0) FROM Pledge p INNER JOIN p.campaign c where c.currentState = 'GREENLIT'")
     Long totalRaised();
 
     @Query("SELECT u FROM User u WHERE u.accessLevel = 'MOD' OR u.accessLevel = 'ADMIN'")
@@ -33,4 +32,15 @@ public interface UserDao extends JpaRepository<User, Long> {
     Page<User> findAllBannedUsers(Pageable pageable);
 
     Page<User> findAllByAccessLevel(User.Access access, Pageable pageable);
+
+    // remember to CREATE EXTENSION pg_trgm;
+    @Query(
+            value = """
+            SELECT users.* FROM users
+            ORDER BY WORD_SIMILARITY(users.name, :searchTerm) DESC
+    """,
+            countQuery = "SELECT COUNT(*) FROM users",
+            nativeQuery = true
+    )
+    Page<User> fuzzySearchUsers(@Param("searchTerm") String searchTerm, Pageable pageable);
 }

@@ -5,10 +5,13 @@ import com.jogaar.controllers.exceptions.EmailConflictException;
 import com.jogaar.daos.CampaignDao;
 import com.jogaar.daos.ImageDao;
 import com.jogaar.daos.UserDao;
+import com.jogaar.dtos.CampaignReadDto;
 import com.jogaar.dtos.ImageReadDto;
 import com.jogaar.dtos.UserCreateDto;
 import com.jogaar.dtos.UserReadDto;
+import com.jogaar.dtos.mappers.CampaignMapper;
 import com.jogaar.dtos.mappers.ImageMapper;
+import com.jogaar.dtos.mappers.UserMapper;
 import com.jogaar.entities.Image;
 import com.jogaar.entities.User;
 import com.jogaar.security.AuthService;
@@ -16,6 +19,7 @@ import com.jogaar.security.StorageService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -41,11 +46,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LookupController {
     private final UserDao userRepo;
+    private final UserMapper userMapper;
+
     private final CampaignDao campaignRepo;
-    private final AuthService authService;
-    private final AuthHelper authHelper;
+    private final CampaignMapper campaignMapper;
+
     private final ImageDao imageRepo;
     private final ImageMapper imageMapper;
+
+    private final AuthService authService;
+    private final AuthHelper authHelper;
+
     private final StorageService storageService;
 
     @PostMapping("/images")
@@ -72,5 +83,35 @@ public class LookupController {
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + existingR.getFilename() + "\"")
                 .body(existingR);
+    }
+
+    @GetMapping("/campaigns/search")
+    public List<CampaignReadDto> searchCampaigns(
+            @RequestParam("query") String query,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size) {
+        return campaignRepo
+                .fuzzySearchCampaigns(
+                        query,
+                        PageRequest.of(page, size))
+                .getContent()
+                .stream()
+                .map(campaignMapper::toReadDto)
+                .toList();
+    }
+
+    @GetMapping("/users/search")
+    public List<UserReadDto> searchUsers(
+            @RequestParam("query") String query,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size) {
+        return userRepo
+                .fuzzySearchUsers(
+                        query,
+                        PageRequest.of(page, size))
+                .getContent()
+                .stream()
+                .map(userMapper::toReadDto)
+                .toList();
     }
 }

@@ -24,5 +24,4 @@ public class ReportReadDto {
 
     @Valid
     private UserReadDto reporter;
-
 }
