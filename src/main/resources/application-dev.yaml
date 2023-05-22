@@ -18,6 +18,7 @@ spring:
       max-request-size: 20MB
 
 server:
+  port: 8000
   error:
     include-stacktrace: never
   tomcat:
