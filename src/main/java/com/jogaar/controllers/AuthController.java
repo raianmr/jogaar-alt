@@ -195,8 +195,8 @@ public class AuthController {
             @RequestParam(defaultValue = "10") int size,
             @Valid @RequestParam(required = false) Report.Reportable type) {
         var result = type != null
-                ? reportDao.findAllByContentType(type, PageRequest.of(page, size))
-                : reportDao.findAll(PageRequest.of(page, size));
+                ? reportDao.findAllByContentTypeOrderByCreatedAtDesc(type, PageRequest.of(page, size))
+                : reportDao.findAllByOrderByCreatedAtDesc(PageRequest.of(page, size));
 
         return result
                 .getContent()
@@ -218,5 +218,15 @@ public class AuthController {
         } catch (DataIntegrityViolationException exception) {
             throw new DuplicateForUserException();
         }
+    }
+
+    @DeleteMapping("/reports/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteReport(@PathVariable Long id) {
+        var existingR = reportDao.findById(id).orElseThrow(NotFoundException::new);
+
+        authHelper.currentSuperOrElseThrow();
+
+        reportDao.deleteById(existingR.getId());
     }
 }

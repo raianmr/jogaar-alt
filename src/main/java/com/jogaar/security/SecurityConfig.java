@@ -14,6 +14,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
@@ -22,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class SecurityConfig implements WebMvcConfigurer {
     private final JwtAuthFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
@@ -55,11 +57,18 @@ public class SecurityConfig {
         return request -> {
             var cors = new CorsConfiguration();
             cors.setAllowCredentials(true);
-            cors.setAllowedOrigins(List.of("*"));
+            cors.setAllowedOriginPatterns(List.of("*"));
             cors.setAllowedHeaders(List.of("*"));
             cors.setAllowedMethods(List.of("*"));
 
             return cors;
         };
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOriginPatterns("*")
+                .allowedMethods("*");
     }
 }
