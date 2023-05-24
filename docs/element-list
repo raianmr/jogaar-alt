@@ -1,0 +1,10 @@
+com.jogaar
+com.jogaar.controllers
+com.jogaar.controllers.exceptions
+com.jogaar.daos
+com.jogaar.docs
+com.jogaar.dtos
+com.jogaar.dtos.mappers
+com.jogaar.entities
+com.jogaar.security
+com.jogaar.tasks

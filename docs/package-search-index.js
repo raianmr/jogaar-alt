@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.jogaar"},{"l":"com.jogaar.controllers"},{"l":"com.jogaar.controllers.exceptions"},{"l":"com.jogaar.daos"},{"l":"com.jogaar.docs"},{"l":"com.jogaar.dtos"},{"l":"com.jogaar.dtos.mappers"},{"l":"com.jogaar.entities"},{"l":"com.jogaar.security"},{"l":"com.jogaar.tasks"}];updateSearchResults();
